@@ -1,12 +1,6 @@
 # Custom Email Sender for Laravel Nova
 
-[![Latest Version on Packagist](https://poser.pugx.org/dniccum/custom-email-sender/v/stable?format=flat-square&color=#0E7FC0)](https://packagist.org/packages/dniccum/custom-email-sender)
-[![License](https://poser.pugx.org/dniccum/custom-email-sender/license?format=flat-square)](https://packagist.org/packages/dniccum/custom-email-sender)
-[![Total Downloads](https://poser.pugx.org/dniccum/custom-email-sender/downloads?format=flat-square)](https://packagist.org/packages/dniccum/custom-email-sender)
-
-This is a tool for Laravel's Nova administrator panel that allows you to send custom email messages that within your application that leverages the applications existing settings and configurations; from address, email driver, etc.
-
-[![Screenshot](https://raw.githubusercontent.com/dniccum/nova-custom-email-sender/master/screenshots/screenshot-1.png)](https://raw.githubusercontent.com/dniccum/nova-custom-email-sender/master/screenshots/screenshot-1.png)
+## :bangbang: This is a fork from this [package](https://github.com/globalsprojects/nova-custom-email-sender).
 
 ## Features
 
@@ -26,13 +20,13 @@ This is a tool for Laravel's Nova administrator panel that allows you to send cu
 You can install the package via composer:
 
 ```
-composer require dniccum/custom-email-sender
+composer require globalsprojects/custom-email-sender
 ```
 
 You will then need to publish the package's configuration and blade view files to your applications installation:
 
 ```
-php artisan vendor:publish --provider="Dniccum\CustomEmailSender\ToolServiceProvider"
+php artisan vendor:publish --provider="GlobalsProjects\CustomEmailSender\ToolServiceProvider"
 ```
 
 If you would only like to publish a portion of the vendor assets, you may use the following tags:
@@ -44,7 +38,7 @@ If you would only like to publish a portion of the vendor assets, you may use th
 with the necessary artisan command like so:
 
 ```
-php artisan vendor:publish --provider="Dniccum\CustomEmailSender\ToolServiceProvider" --tag=config
+php artisan vendor:publish --provider="GlobalsProjects\CustomEmailSender\ToolServiceProvider" --tag=config
 ```
 
 Inside `App\Providers\NovaServiceProvider`update the tools function. This will include the link on the sidebar.  
@@ -174,15 +168,6 @@ return [
 ## Localization / Translation
 
 After the vendor files have been published, you may edit the necessary placeholders in the `resources/lang/vendor/custom-email-sender` directory.
-
-## To Do
-
-- [x] Email preview (thanks @Yelles for the idea!)
-- [x] Localization
-- [ ] Add dynamic autocomplete for app's user Model
-- [ ] Add support for Laravel action button components
-- [ ] Polish up UI
-- [ ] Add additional options to further customize the Quill editor
 
 ## License
 

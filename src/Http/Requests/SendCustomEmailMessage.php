@@ -1,5 +1,5 @@
 <?php
-namespace Dniccum\CustomEmailSender\Http\Requests;
+namespace GlobalsProjects\CustomEmailSender\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

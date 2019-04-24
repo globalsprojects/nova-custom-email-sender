@@ -1,6 +1,6 @@
 <?php
 
-namespace Dniccum\CustomEmailSender;
+namespace GlobalsProjects\CustomEmailSender;
 
 use Laravel\Nova\Nova;
 use Laravel\Nova\Tool;

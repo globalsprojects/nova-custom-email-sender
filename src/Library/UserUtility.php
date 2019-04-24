@@ -1,5 +1,5 @@
 <?php
-namespace Dniccum\CustomEmailSender\Library;
+namespace GlobalsProjects\CustomEmailSender\Library;
 
 
 class UserUtility

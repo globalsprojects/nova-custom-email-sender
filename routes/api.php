@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/config', 'Dniccum\CustomEmailSender\Http\Controllers\CustomEmailSenderController@config');
-Route::post('/send', 'Dniccum\CustomEmailSender\Http\Controllers\CustomEmailSenderController@send');
-Route::post('/preview', 'Dniccum\CustomEmailSender\Http\Controllers\CustomEmailSenderController@preview');
+Route::get('/config', 'GlobalsProjects\CustomEmailSender\Http\Controllers\CustomEmailSenderController@config');
+Route::post('/send', 'GlobalsProjects\CustomEmailSender\Http\Controllers\CustomEmailSenderController@send');
+Route::post('/preview', 'GlobalsProjects\CustomEmailSender\Http\Controllers\CustomEmailSenderController@preview');

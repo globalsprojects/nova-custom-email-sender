@@ -1,9 +1,9 @@
 <?php
-namespace Dniccum\CustomEmailSender\Http\Controllers;
+namespace GlobalsProjects\CustomEmailSender\Http\Controllers;
 
-use Dniccum\CustomEmailSender\Http\Requests\SendCustomEmailMessage;
-use Dniccum\CustomEmailSender\Library\UserUtility;
-use Dniccum\CustomEmailSender\Mail\CustomMessageMailable;
+use GlobalsProjects\CustomEmailSender\Http\Requests\SendCustomEmailMessage;
+use GlobalsProjects\CustomEmailSender\Library\UserUtility;
+use GlobalsProjects\CustomEmailSender\Mail\CustomMessageMailable;
 
 class CustomEmailSenderController
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Dniccum\CustomEmailSender\Mail;
+namespace GlobalsProjects\CustomEmailSender\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -44,7 +44,7 @@ class CustomMessageMailable extends Mailable implements ShouldQueue
         $view = config('novaemailsender.template.view');
 
         if (!view()->exists($view)) {
-            \View::addLocation(base_path('vendor/dniccum/custom-email-sender/resources/views'));
+            \View::addLocation(base_path('vendor/globalsprojects/custom-email-sender/resources/views'));
             $view = 'email';
         }
 

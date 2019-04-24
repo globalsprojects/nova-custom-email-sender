@@ -1,12 +1,12 @@
 <?php
 
-namespace Dniccum\CustomEmailSender;
+namespace GlobalsProjects\CustomEmailSender;
 
 use Laravel\Nova\Nova;
 use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Dniccum\CustomEmailSender\Http\Middleware\Authorize;
+use GlobalsProjects\CustomEmailSender\Http\Middleware\Authorize;
 
 class ToolServiceProvider extends ServiceProvider
 {

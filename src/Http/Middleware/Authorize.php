@@ -1,8 +1,8 @@
 <?php
 
-namespace Dniccum\CustomEmailSender\Http\Middleware;
+namespace GlobalsProjects\CustomEmailSender\Http\Middleware;
 
-use Dniccum\CustomEmailSender\CustomEmailSender;
+use GlobalsProjects\CustomEmailSender\CustomEmailSender;
 
 class Authorize
 {
