@@ -1,5 +1,5 @@
 {
-    "name": "globalsprojects/custom-email-sender",
+    "name": "globalsprojects/nova-custom-email-sender",
     "description": "A tool for Laravel's Nova administrator panel that allows you to send custom email messages that within your application that leverages the applications existing settings and configurations.",
     "homepage": "https://github.com/globalsprojects/nova-custom-email-sender",
     "keywords": [
