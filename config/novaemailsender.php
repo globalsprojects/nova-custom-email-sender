@@ -60,6 +60,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Default Group Model
+    |--------------------------------------------------------------------------
+    |
+    | To use the "send to group" feature, define the group_model class and the foreign
+    | key used in the relationship.
+    |
+    */
+
+    'group_model' => [
+        'class' => \App\Role::class,
+        'foreign_key' => 'user_id',         // Can be null if Many to Many Relationship
+        'relationship_name' => null      // Can be null if non Many to Many Relationship
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Email Template
     |--------------------------------------------------------------------------
     |

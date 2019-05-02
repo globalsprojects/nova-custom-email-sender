@@ -3,6 +3,7 @@ namespace GlobalsProjects\CustomEmailSender\Http\Controllers;
 
 use GlobalsProjects\CustomEmailSender\Http\Requests\SendCustomEmailMessage;
 use GlobalsProjects\CustomEmailSender\Library\UserUtility;
+use GlobalsProjects\CustomEmailSender\Library\GroupUtility;
 use GlobalsProjects\CustomEmailSender\Mail\CustomMessageMailable;
 
 class CustomEmailSenderController
@@ -12,15 +13,22 @@ class CustomEmailSenderController
      */
     private $userUtility;
 
+    /**
+     * @var GroupUtility
+     */
+    private $groupUtility;
+
     public function __construct()
     {
         $userClassName = config('novaemailsender.model.class');
+        $groupClassName = config('novaemailsender.group_model.class');
 
         if (empty($userClassName)) {
             die('Please define a user class for the Custom Email Sender');
         }
 
         $this->userUtility = new UserUtility(new $userClassName);
+        $this->groupUtility = new GroupUtility(new $groupClassName);
     }
 
     /**
@@ -35,6 +43,8 @@ class CustomEmailSenderController
         return response()
             ->json([
                 'config' => config('novaemailsender'),
+                'users' => $this->userUtility->getAllUsers(),
+                'groups' => $this->groupUtility->getAllGroups(),
                 'messages' => __('custom-email-sender::tool')
             ]);
     }

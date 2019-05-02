@@ -20,15 +20,27 @@
                             <p class="mb-2">{{ messages['recipients-toggle-copy'] }}</p>
                             <toggle-button :width="60" :height="26" color="var(--primary)" v-model="sendToAll" :disabled="isThinking()" />
                         </div>
-                        <p class="mb-2">{{ messages['recipients-manual-input-copy'] }}</p>
-                        <div class="input-wrapper">
-                            <email-input-tag
-                                    v-model="recipients"
-                                    :placeholder="messages['recipients-manual-input-placeholder']"
-                                    class="form-control form-input form-input-bordered"
-                                    :validate="validateEmailAddress"
-                                    :read-only="sendToAll || isThinking()"
-                            ></email-input-tag>
+                        <div class="mb-6" v-if="!sendToAll">
+                            <p class="mb-2">{{ messages['recipients-group-input-copy'] }}</p>
+                            <div class="input-wrapper">
+                                <group-input-tag
+                                     :placeholder="messages['recipients-group-input-placeholder']"
+                                     :groupOptions="groups"
+                                     :messages="messages"
+                                     @update:groupRecipients="updateGroupRecipients($event)"
+                                ></group-input-tag>
+                            </div>
+                        </div>
+                        <div class="mb-6" v-if="!sendToAll">                        
+                            <p class="mb-2">{{ messages['recipients-manual-input-copy'] }}</p>
+                            <div class="input-wrapper">
+                                <email-input-tag
+                                        v-model="recipients"
+                                        :placeholder="messages['recipients-manual-input-placeholder']"
+                                        class="form-control form-input form-input-bordered"
+                                        :validate="validateEmailAddress"
+                                ></email-input-tag>
+                            </div>
                         </div>
                     </div>
 
@@ -71,6 +83,7 @@
     import { quillEditor } from 'vue-quill-editor'
     import { ToggleButton } from 'vue-js-toggle-button'
 
+    import GroupInputTag from './GroupInputTag';
     import EmailInputTag from './EmailInputTag';
     import CounterInput from './CounterInput';
     import SuccessPanel from './SuccessPanel';
@@ -79,12 +92,15 @@
         name: "MessageForm",
         components: {
             quillEditor,
+            GroupInputTag,
             EmailInputTag,
             CounterInput,
             ToggleButton,
             SuccessPanel,
         },
         props: {
+            users: Object,
+            groups: Object,
             messages: Object,
             quillConfiguration: Object,
             default: {
@@ -103,6 +119,7 @@
                 gettingPreview: false,
                 sendToAll: false,
                 subject: '',
+                groupRecipients: [],
                 recipients: [],
                 htmlContent: '',
                 complete: false
@@ -122,9 +139,17 @@
             },
             quillEditor() {
                 return this.$refs.myQuillEditor.quill
+            },
+
+            allRecipients() {
+                return this.recipients.concat(this.groupRecipients)
             }
         },
         methods: {
+            updateGroupRecipients(recipients) {
+                this.groupRecipients = recipients
+                console.log(this.allRecipients);
+            },
             isThinking() {
                 if (this.loading || this.gettingPreview) {
                     return true

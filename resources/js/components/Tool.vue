@@ -4,6 +4,8 @@
     <div class="email-sender" v-else>
         <message-form
                 :quill-configuration="config.editor"
+                :users="users"
+                :groups="groups"
                 :messages="messages"
         ></message-form>
 
@@ -27,6 +29,8 @@
                 config: {
                     editor: {},
                 },
+                users: {},
+                groups: {},
                 messages: {}
             }
         },
@@ -39,6 +43,8 @@
 
                 Nova.request().get('/nova-vendor/custom-email-sender/config').then(response => {
                     vm.config = response.data.config;
+                    vm.users = response.data.users;
+                    vm.groups = response.data.groups;
                     vm.messages = response.data.messages;
                 }).catch(error => {
                     this.$toasted.show(error.response.data, { type: 'error' })
