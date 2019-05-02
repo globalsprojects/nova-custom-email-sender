@@ -45,6 +45,7 @@ class GroupUtility
                 $object = new \stdClass();
                 $object->name = $group->name;
                 $object->users = $users;
+                $object->{'$isDisabled'} = false;
 
                 $groupCollection->push($object);
             }

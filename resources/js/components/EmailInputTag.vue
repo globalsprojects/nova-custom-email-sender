@@ -1,189 +1,65 @@
 <template>
-    <div
-        @click="focusNewTag()"
-        :class="{
-            'read-only': readOnly,
-            'vue-input-tag-wrapper--active': isInputActive,
-        }"
-        class="vue-input-tag-wrapper"
-    >
-        <span v-for="(tag, index) in innerTags" :key="index" class="input-tag">
-            <span>{{ tag }}</span>
-            <a v-if="!readOnly" @click.prevent.stop="remove(index)" class="remove"></a>
-        </span>
-        <input
-                v-if="!readOnly && !isLimit"
-                ref="inputtag"
-                :placeholder= "placeholder"
-                type= "text"
-                v-model= "newTag"
-                v-on:keydown.delete.stop="removeLastTag"
-                v-on:keydown= "addNew"
-                v-on:blur= "handleInputBlur"
-                v-on:focus= "handleInputFocus"
-                :class= "cssClasses"
-                @keydown.stop="handleKeydown"
-        />
+    <div class="email-input-tag">
+        <multiselect v-model="recipients" :options="options" :placeholder="placeholder" multiple label="email" track-by="id" class="mb-2" @input="$emit('update:recipients', recipients)" optionsLimit="10" :selectLabel="messages['recipients-select-text']" :deselectLabel="messages['recipients-remove-text']" :selectedLabel="messages['recipients-selected-text']">
+            <template slot="singleLabel" slot-scope="props">
+                <span class="option__desc">
+                    <span class="option__title">{{ props.option.email }}</span>
+                </span>
+            </template>
+            <template slot="option" slot-scope="props">
+                <div class="option__desc">
+                    <span class="option__title">{{ props.option.name }}</span> (<span class="option__small">{{ props.option.email }}</span>)
+                </div>
+            </template>
+            <span slot="noResult">{{ messages['recipients-no-result'] }}</span>
+            <span slot="noOptions">{{ messages['recipients-no-options'] }}</span>
+        </multiselect>
     </div>
 </template>
-
 <script>
+    import Multiselect from 'vue-multiselect'
+
     export default {
-        name: "EmailInputTag",
-
-        props: {
-            value: {
-                type: Array,
-                default: () => []
-            },
-            placeholder: {
-                type: String,
-                default: ""
-            },
-            readOnly: {
-                type: Boolean,
-                default: false
-            },
-            validate: {
-                type: String | Function | Object,
-                default: ""
-            },
-            addTagOnKeys: {
-                type: Array,
-                default: function() {
-                    return [
-                        13, // Return
-                        188, // Comma ','
-                        9 // Tab
-                    ];
-                }
-            },
-            addTagOnBlur: {
-                type: Boolean,
-                default: false
-            },
-            limit: {
-                type: Number,
-                default: -1
-            },
-            allowDuplicates: {
-                type: Boolean,
-                default: false
+        name: 'email-input-tag',
+        props: ['placeholder', 'options', 'messages', 'clearingSelection'],
+        components: {
+            Multiselect
+        },
+        data: () => ({
+            recipients: []
+        }),
+        mounted() {
+            this.options.reverse();
+        }
+    }
+</script>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style lang="scss">
+    .email-input-tag {
+        &-recipients {
+            &-title {
+                font-size: 25px;
+                font-weight: bold;
+                margin-bottom: 20px;
             }
-        },
 
-        data() {
-            return {
-                newTag: "",
-                innerTags: [...this.value],
-                isInputActive: false
-            };
-        },
+            &-list {
+                list-style-type: none;
+                padding: 0;
 
-        computed: {
-            isLimit: function() {
-                return this.limit > 0 && Number(this.limit) === this.innerTags.length;
-            },
-            cssClasses() {
-                return `new-tag`
-            }
-        },
+                li {
+                    font-size: 15px;
 
-        methods: {
-            handleKeydown() {
-                // resets default
-            },
+                    &:not(:last-child) {
+                        margin-bottom: 10px;
+                    }
 
-            focusNewTag() {
-                if (this.readOnly || !this.$el.querySelector(".new-tag")) {
-                    return;
+                    .email-text {
+                        color: var(--primary);
+                        font-style: italic;
+                    }
                 }
-                this.$el.querySelector(".new-tag").focus();
-            },
-
-            handleInputFocus() {
-                this.isInputActive = true;
-            },
-
-            handleInputBlur(e) {
-                this.isInputActive = false;
-                this.addNew(e);
-            },
-
-            addNew(e) {
-                const keyShouldAddTag = e
-                    ? this.addTagOnKeys.indexOf(e.keyCode) !== -1
-                    : true;
-
-                const typeIsNotBlur = e && e.type !== "blur";
-
-                if (
-                    (!keyShouldAddTag && (typeIsNotBlur || !this.addTagOnBlur)) ||
-                    this.isLimit
-                ) {
-                    return;
-                }
-
-                if (
-                    this.newTag &&
-                    (this.allowDuplicates || this.innerTags.indexOf(this.newTag) === -1) &&
-                    this.validateIfNeeded(this.newTag)
-                ) {
-                    this.innerTags.push(this.newTag);
-                    this.newTag = "";
-                    this.tagChange();
-
-                    e && e.preventDefault();
-                }
-            },
-
-            validateIfNeeded(tagValue) {
-                if (this.validate === "" || this.validate === undefined) {
-                    return true;
-                }
-
-                if (typeof this.validate === "function") {
-                    return this.validate(tagValue);
-                }
-
-                if (
-                    typeof this.validate === "string" &&
-                    Object.keys(validators).indexOf(this.validate) > -1
-                ) {
-                    return validators[this.validate].test(tagValue);
-                }
-
-                if (
-                    typeof this.validate === "object" &&
-                    this.validate.test !== undefined
-                ) {
-                    return this.validate.test(tagValue);
-                }
-
-                return true;
-            },
-
-            remove(index) {
-                this.innerTags.splice(index, 1);
-                this.tagChange();
-            },
-
-            removeLastTag() {
-                if (this.newTag) {
-                    return;
-                }
-                this.innerTags.pop();
-                this.tagChange();
-            },
-
-            tagChange() {
-                this.$emit("update:tags", this.innerTags);
-                this.$emit("input", this.innerTags);
             }
         }
-    };
-</script>
-
-<style scoped>
-
+    }
 </style>

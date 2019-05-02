@@ -1,6 +1,6 @@
 <template>
 	<div class="group-input-tag">
-		<multiselect v-model="groups" :options="groupOptions" :placeholder="placeholder" multiple label="name" track-by="users" class="mb-2" @input="$emit('update:groupRecipients', recipients)" :closeOnSelect="false" optionsLimit="10" :selectLabel="messages['recipients-select-text']" :deselectLabel="messages['recipients-remove-text']" :selectedLabel="messages['recipients-selected-text']">
+		<multiselect v-model="groups" :options="groupOptions" :placeholder="placeholder" multiple label="name" track-by="users" class="mb-2" @input="$emit('update:groupRecipients', recipients)" optionsLimit="10" :selectLabel="messages['recipients-select-text']" :deselectLabel="messages['recipients-remove-text']" :selectedLabel="messages['recipients-selected-text']">
 		    <template slot="singleLabel" slot-scope="props">
 		    	<span class="option__desc">
 		    		<span class="option__title">{{ props.option.name }}</span>

@@ -35,14 +35,17 @@
                             <p class="mb-2">{{ messages['recipients-manual-input-copy'] }}</p>
                             <div class="input-wrapper">
                                 <email-input-tag
-                                        v-model="recipients"
-                                        :placeholder="messages['recipients-manual-input-placeholder']"
-                                        class="form-control form-input form-input-bordered"
-                                        :validate="validateEmailAddress"
+                                    :placeholder="messages['recipients-manual-input-placeholder']"
+                                    :options="uniqueOptions"
+                                    :messages="messages"
+                                    :clearingSelection="clearingSelection"
+                                    @update:recipients="updateRecipients($event)"
                                 ></email-input-tag>
                             </div>
                         </div>
                     </div>
+
+                    <pre><code>{{ allRecipients }}</code></pre>
 
                     <h3 class="text-base text-80 font-bold mb-3">{{ messages['content-header'] }}</h3>
                     <div class="mb-8">
@@ -121,6 +124,7 @@
                 subject: '',
                 groupRecipients: [],
                 recipients: [],
+                clearingSelection: false,
                 htmlContent: '',
                 complete: false
             }
@@ -140,16 +144,29 @@
             quillEditor() {
                 return this.$refs.myQuillEditor.quill
             },
-
             allRecipients() {
                 return this.recipients.concat(this.groupRecipients)
+            },
+            uniqueOptions() {
+                return this.users.filter((option) => {
+                    option.$isDisabled = this.groupRecipients.some((recipient) => {
+                        return recipient.email === option.email
+                    })
+                    return option.$isDisabled === false
+                })
             }
         },
         methods: {
             updateGroupRecipients(recipients) {
+                this.clearingSelection = true
                 this.groupRecipients = recipients
-                console.log(this.allRecipients);
+                this.clearingSelection = false
             },
+
+            updateRecipients(recipients) {
+                this.recipients = recipients
+            },
+
             isThinking() {
                 if (this.loading || this.gettingPreview) {
                     return true
@@ -163,22 +180,11 @@
                     return false;
                 }
 
-                if (this.recipients.length === 0 && !this.sendToAll) {
+                if (this.allRecipients.length === 0 && !this.sendToAll) {
                     return false;
                 }
 
                 return true;
-            },
-
-            validateEmailAddress(value) {
-                let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                let isValid = re.test(String(value).toLowerCase());
-
-                if (!isValid) {
-                    this.$toasted.show(this.messages['invalid-email'], { type: 'error' })
-                }
-
-                return isValid;
             },
 
             sendMessage() {
@@ -189,7 +195,7 @@
                 Nova.request().post('/nova-vendor/custom-email-sender/send', {
                     subject: vm.subject,
                     sendToAll: vm.sendToAll,
-                    recipients: vm.recipients,
+                    recipients: vm.allRecipients,
                     htmlContent: this.htmlContent
                 }).then(response => {
                     vm.$toasted.show(response.data, { type: 'success' });
@@ -216,7 +222,7 @@
                 Nova.request().post('/nova-vendor/custom-email-sender/preview', {
                     subject: vm.subject,
                     sendToAll: vm.sendToAll,
-                    recipients: vm.recipients,
+                    recipients: vm.allRecipients,
                     htmlContent: this.htmlContent
                 }).then(response => {
                     Nova.$emit('show-email-preview', response.data.content)
@@ -255,6 +261,7 @@
                 this.sendToAll = false;
                 this.complete = false;
                 this.recipients = [];
+                this.groupRecipients = [];
                 this.htmlContent = '';
             }
         }
