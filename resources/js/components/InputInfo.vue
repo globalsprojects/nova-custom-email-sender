@@ -17,10 +17,7 @@
 <script>
 	export default {
 		name: 'input-info',
-		props: ['messages', 'recipients'],
-		mounted() {
-			console.log('hola');
-		}
+		props: ['messages', 'recipients']
 	}
 </script>
 <style lang="scss">

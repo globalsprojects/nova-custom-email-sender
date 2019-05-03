@@ -59,13 +59,9 @@ class CustomEmailSenderController
     {
         $requestData = $request->validated();
 
-        if ($requestData['sendToAll']) {
-            $users = $this->userUtility->getAllUsers();
-        } else {
-            $users = collect($requestData['recipients'])->map(function($address) {
-                return ['email' => $address];
-            });
-        }
+        $users = collect($requestData['recipients'])->map(function($address) {
+            return ['user' => $address];
+        });
 
         $content = $requestData['htmlContent'];
         $subject = $requestData['subject'];

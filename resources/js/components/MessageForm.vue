@@ -50,8 +50,6 @@
                         </div>
                     </div>
 
-                    <pre><code>{{ allRecipients }}</code></pre>
-
                     <h3 class="text-base text-80 font-bold mb-3">{{ messages['content-header'] }}</h3>
                     <div class="mb-8">
                         <p class="mb-2">{{ messages['content-copy'] }}</p>
@@ -237,7 +235,6 @@
 
                 Nova.request().post('/nova-vendor/custom-email-sender/send', {
                     subject: vm.subject,
-                    sendToAll: vm.sendToAll,
                     recipients: vm.allRecipients,
                     htmlContent: this.htmlContent
                 }).then(response => {
@@ -252,6 +249,7 @@
                     } else {
                         this.$toasted.show(response.statusText, { type: 'error' })
                     }
+                    console.log(response);
                 }).finally(() => {
                     vm.setLoading(false);
                 });
@@ -264,7 +262,6 @@
 
                 Nova.request().post('/nova-vendor/custom-email-sender/preview', {
                     subject: vm.subject,
-                    sendToAll: vm.sendToAll,
                     recipients: vm.allRecipients,
                     htmlContent: this.htmlContent
                 }).then(response => {
