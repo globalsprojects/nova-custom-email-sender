@@ -17,10 +17,21 @@
                     <h3 class="text-base text-80 font-bold mb-3">{{ messages['recipients-header'] }}</h3>
                     <div class="mb-8">
                         <div class="mb-6">
-                            <p class="mb-2">{{ messages['recipients-toggle-copy'] }}</p>
-                            <toggle-button :width="60" :height="26" color="var(--primary)" v-model="sendToAll" :disabled="isThinking()" />
+                            <radio-input-group :radioInputOptions="radioInputOptions" @update:selected="updateRecipientsOption($event)"></radio-input-group>
                         </div>
-                        <div class="mb-6" v-if="!sendToAll">
+                        <div class="mb-6" v-if="recipientsOption === 'manual'">                        
+                            <p class="mb-2">{{ messages['recipients-manual-input-copy'] }}</p>
+                            <div class="input-wrapper">
+                                <email-input-tag
+                                    :placeholder="messages['recipients-manual-input-placeholder']"
+                                    :options="uniqueOptions"
+                                    :messages="messages"
+                                    :clearingSelection="clearingSelection"
+                                    @update:recipients="updateRecipients($event)"
+                                ></email-input-tag>
+                            </div>
+                        </div>
+                        <div class="mb-6" v-if="recipientsOption === 'group'">
                             <p class="mb-2">{{ messages['recipients-group-input-copy'] }}</p>
                             <div class="input-wrapper">
                                 <group-input-tag
@@ -31,16 +42,10 @@
                                 ></group-input-tag>
                             </div>
                         </div>
-                        <div class="mb-6" v-if="!sendToAll">                        
-                            <p class="mb-2">{{ messages['recipients-manual-input-copy'] }}</p>
+                        <div class="mb-6" v-if="recipientsOption === 'all'">
+                            <p class="mb-2">{{ messages['recipients-toggle-copy'] }}</p>
                             <div class="input-wrapper">
-                                <email-input-tag
-                                    :placeholder="messages['recipients-manual-input-placeholder']"
-                                    :options="uniqueOptions"
-                                    :messages="messages"
-                                    :clearingSelection="clearingSelection"
-                                    @update:recipients="updateRecipients($event)"
-                                ></email-input-tag>
+                                <all-input-tag @toggle:sentToAll="addAllRecipients($event)" :recipients="allRecipients" :messages="messages"></all-input-tag>
                             </div>
                         </div>
                     </div>
@@ -84,12 +89,13 @@
     import 'quill/dist/quill.bubble.css'
 
     import { quillEditor } from 'vue-quill-editor'
-    import { ToggleButton } from 'vue-js-toggle-button'
 
     import GroupInputTag from './GroupInputTag';
     import EmailInputTag from './EmailInputTag';
+    import AllInputTag from './AllInputTag';
     import CounterInput from './CounterInput';
     import SuccessPanel from './SuccessPanel';
+    import RadioInputGroup  from './RadioInputGroup';
 
     export default {
         name: "MessageForm",
@@ -97,9 +103,10 @@
             quillEditor,
             GroupInputTag,
             EmailInputTag,
+            AllInputTag,
             CounterInput,
-            ToggleButton,
             SuccessPanel,
+            RadioInputGroup,
         },
         props: {
             users: Object,
@@ -124,8 +131,29 @@
                 subject: '',
                 groupRecipients: [],
                 recipients: [],
+                recipientsOption: 'manual',
                 clearingSelection: false,
                 htmlContent: '',
+                radioInputOptions: [
+                    { 
+                        id: 'manual', 
+                        for: 'manual', 
+                        label: this.messages['recipients-option-manual'],
+                        value: 'manual',
+                    },
+                    { 
+                        id: 'group', 
+                        for: 'group', 
+                        label: this.messages['recipients-option-group'],
+                        value: 'group',
+                    },
+                    { 
+                        id: 'all', 
+                        for: 'all', 
+                        label: this.messages['recipients-option-all'],
+                        value: 'all',
+                    }
+                ],
                 complete: false
             }
         },
@@ -157,6 +185,21 @@
             }
         },
         methods: {
+            addAllRecipients (event) {
+                this.sendToAll = event
+
+                if (this.sendToAll) {
+                    this.recipients = this.users;
+                } else {
+                    this.resetRecipients()
+                }
+            },
+
+            updateRecipientsOption(option) {
+                this.resetRecipients()
+                this.recipientsOption = option
+            },
+
             updateGroupRecipients(recipients) {
                 this.clearingSelection = true
                 this.groupRecipients = recipients
@@ -263,6 +306,11 @@
                 this.recipients = [];
                 this.groupRecipients = [];
                 this.htmlContent = '';
+            },
+
+            resetRecipients() {
+                this.recipients = [];
+                this.groupRecipients = [];
             }
         }
     }
